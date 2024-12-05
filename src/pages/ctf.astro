@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { db } from '../lib/db';
+
+const result = await db.execute('SELECT * FROM ctfs ORDER BY created_at DESC');
+const ctfs = result.rows.map(row => ({
+  title: row.title,
+  description: row.description,
+  icon: row.icon,
+  tech: row.tech,
+}));
+
+function getTechArray(techString: string) {
+  return techString
+    ? techString
+        .replace(/[\[\]"]/g, '')
+        .split(',')
+        .map(tech => tech.trim())
+    : [];
+}
+---
+
+<Layout title="CTF - Cybersécurité">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div class="container mx-auto px-4 py-24 max-w-6xl">
+      <h1 class="text-4xl font-bold text-center mb-16">
+        <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+          Résultats CTF
+        </span>
+      </h1>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {ctfs.map((ctf) => (
+          <div class="bg-gray-800/50 backdrop-blur rounded-xl p-6 shadow-lg border border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+            <div class="text-4xl mb-4">{ctf.icon}</div>
+            <h3 class="text-xl font-bold mb-3 text-cyan-400">{ctf.title}</h3>
+            <p class="text-gray-300 mb-4">{ctf.description}</p>
+            <div class="flex flex-wrap gap-2">
+              {getTechArray(ctf.tech).map((tech) => (
+                <span class="px-3 py-1 bg-gray-700/50 rounded-full text-sm text-cyan-400">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
