@@ -1,0 +1,26 @@
+{
+  "name": "@example/basics",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "init-admin": "tsx src/scripts/init-admin.ts"
+  },
+  "dependencies": {
+    "@astrojs/node": "^8.2.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@libsql/client": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.10",
+    "astro": "^4.15.3",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.16",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.7.1"
+  }
+}
