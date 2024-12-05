@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+
+const skills = {
+  securite: [
+    "Penetration Testing",
+    "Analyse de Vulnérabilités",
+    "Sécurité Réseau",
+    "Forensics",
+    "Reverse Engineering",
+    "OSINT",
+    "Web Security",
+    "Active Directory",
+    "Cryptographie",
+    "Social Engineering"
+  ],
+  technologies: [
+    "Python",
+    "Linux",
+    "Docker",
+    "Bash Scripting",
+    "HTML / CSS",
+    "JavaScript",
+    "PHP",
+    "C",
+    "Astro",
+    "SQL"
+  ],
+  outils: [
+    "Burp Suite",
+    "Metasploit",
+    "Wireshark",
+    "Nmap",
+    "IDA Pro",
+    "GDB",
+    "Ghidra",
+    "SQLmap",
+    "Hashcat | JohnTheRipper",
+    "DirBuster"
+  ]
+};
+
+const experiences = [
+  {
+    title: "Responsable technique",
+    company: "Oteria Cyber Advisory",
+    period: "Juillet 2024 - Présent",
+    location: "Gennevilliers, Île-de-France"
+  },
+  {
+    title: "Réserviste Opérationnel",
+    company: "Gendarmerie Nationale",
+    period: "Juin 2024 - Présent"
+  },
+  {
+    title: "Réserviste",
+    company: "Armée de Terre",
+    period: "Juin 2023 - Mai 2024"
+  }
+];
+---
+
+<Layout title="À Propos - Cybersécurité">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
+    <div class="container mx-auto px-4 py-24 max-w-6xl">
+      <div class="space-y-16">
+        <!-- Hero Section -->
+        <div class="text-center space-y-4">
+          <h1 class="text-4xl font-bold text-cyan-400">À Propos</h1>
+          <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+            Passionné par la cybersécurité, spécialisé dans la protection des systèmes d'information et la sécurité offensive
+          </p>
+        </div>
+
+        <!-- Skills Grid -->
+        <div class="grid md:grid-cols-3 gap-8">
+          {Object.entries(skills).map(([category, items]) => (
+            <div class="bg-gray-800/50 backdrop-blur rounded-xl p-6 shadow-lg border border-gray-700">
+              <h2 class="text-xl font-semibold mb-4 text-cyan-400 capitalize">
+                {category}
+              </h2>
+              <ul class="space-y-2">
+                {items.map(skill => (
+                  <li class="flex items-center text-gray-300 gap-2">
+                    <span class="text-cyan-400">▸</span>
+                    {skill}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <!-- Experience Timeline -->
+        <div class="space-y-8">
+          <h2 class="text-2xl font-bold text-cyan-400">Expérience</h2>
+          <div class="space-y-6">
+            {experiences.map(exp => (
+              <div class="bg-gray-800/50 backdrop-blur rounded-xl p-6 border border-gray-700">
+                <h3 class="text-xl font-semibold text-white">{exp.title}</h3>
+                <p class="text-cyan-400 mt-1">{exp.company}</p>
+                <p class="text-gray-400 text-sm mt-1">{exp.period}</p>
+                {exp.location && (
+                  <p class="text-gray-400 text-sm">{exp.location}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
