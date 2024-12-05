@@ -1,0 +1,106 @@
+---
+import Layout from '../../../../layouts/Layout_admin.astro';
+import { verifyToken } from '../../../../lib/auth';
+import { db } from '../../../../lib/db';
+
+// Vérification de l'authentification
+const token = Astro.cookies.get('token')?.value;
+if (!token || !verifyToken(token)) {
+  return Astro.redirect('/admin/login');
+}
+
+// Récupération du projet
+const { id } = Astro.params;
+const result = await db.execute({
+  sql: 'SELECT * FROM ctfs WHERE id = ?',
+  args: [id]
+});
+
+const ctf = result.rows[0];
+if (!ctf) {
+  return Astro.redirect('/admin/ctfs');
+}
+---
+
+<Layout title="Modifier le Projet - Administration">
+  <main class="pt-32">
+    <div class="container mx-auto px-6 py-12">
+      <h1 class="text-4xl font-bold mb-8">
+        <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+          Modifier le Projet
+        </span>
+      </h1>
+
+      <form action={`/api/ctfs/${id}`} method="POST" class="max-w-4xl space-y-6">
+        <input type="hidden" name="_method" value="PUT" />
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">
+            Titre
+          </label>
+          <input
+            type="text"
+            name="title"
+            value={ctf.title}
+            required
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">
+            Description
+          </label>
+          <textarea
+            name="description"
+            required
+            rows="3"
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+          >{ctf.description}</textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">
+            Icône (emoji)
+          </label>
+          <input
+            type="text"
+            name="icon"
+            value={ctf.icon}
+            maxlength="2"
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">
+            Technologies (séparées par des virgules)
+          </label>
+          <input
+            type="text"
+            name="tech"
+            value={JSON.parse(ctf.tech).join(', ')}
+            required
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+
+        <div class="flex justify-end space-x-4">
+          <a 
+            href="/admin/ctfs"
+            class="px-4 py-2 text-gray-400 hover:text-gray-300 transition-colors"
+          >
+            Annuler
+          </a>
+          <button
+            type="submit"
+            class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+          >
+            Mettre à jour
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</Layout>
