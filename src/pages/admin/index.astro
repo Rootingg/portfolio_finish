@@ -1,0 +1,74 @@
+---
+import Layout from '../../layouts/Layout_admin.astro';
+import { verifyToken } from '../../lib/auth';
+import { db } from '../../lib/db';
+
+const token = Astro.cookies.get('token')?.value;
+console.log('Admin page token:', token);
+
+if (token) {
+  const verified = verifyToken(token);
+  console.log('Token verification:', verified);
+  
+  if (!verified) {
+    console.log('Invalid token, redirecting to login');
+    return Astro.redirect('/admin/login');
+  }
+} else {
+  console.log('No token found, redirecting to login');
+  return Astro.redirect('/admin/login');
+}
+
+const stats = {
+  articles: (await db.execute('SELECT COUNT(*) as count FROM articles')).rows[0].count,
+  projects: (await db.execute('SELECT COUNT(*) as count FROM projects')).rows[0].count,
+  ctfs: (await db.execute('SELECT COUNT(*) as count FROM ctfs')).rows[0].count,
+  messages: (await db.execute('SELECT COUNT(*) as count FROM contacts WHERE read = 0')).rows[0].count
+};
+---
+
+<Layout title="Administration - CyberPortfolio">
+  <main class="pt-32">
+    <div class="container mx-auto px-6 py-12">
+      <h1 class="text-4xl font-bold mb-8">
+        <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+          Administration
+        </span>
+      </h1>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-gray-800/20">
+          <h2 class="text-xl font-bold mb-2">Articles</h2>
+          <p class="text-3xl text-cyan-500">{stats.articles}</p>
+          <a href="/admin/articles" class="text-sm text-gray-400 hover:text-cyan-500">Gérer →</a>
+        </div>
+
+        <div class="bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-gray-800/20">
+          <h2 class="text-xl font-bold mb-2">Projets</h2>
+          <p class="text-3xl text-cyan-500">{stats.projects}</p>
+          <a href="/admin/projects" class="text-sm text-gray-400 hover:text-cyan-500">Gérer →</a>
+        </div>
+
+        <div class="bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-gray-800/20">
+          <h2 class="text-xl font-bold mb-2">CTFS</h2>
+          <p class="text-3xl text-cyan-500">{stats.ctfs}</p>
+          <a href="/admin/ctfs" class="text-sm text-gray-400 hover:text-cyan-500">Gérer →</a>
+        </div>
+
+        <div class="bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-gray-800/20">
+          <h2 class="text-xl font-bold mb-2">Messages non lus</h2>
+          <p class="text-3xl text-cyan-500">{stats.messages}</p>
+          <a href="/admin/messages" class="text-sm text-gray-400 hover:text-cyan-500">Voir →</a>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <form method="POST" action="/api/auth/logout">
+          <button type="submit" class="text-gray-400 hover:text-cyan-500">
+            Déconnexion
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</Layout>
