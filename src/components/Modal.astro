@@ -1,0 +1,78 @@
+---
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<div
+  {id}
+  class="fixed inset-x-0 top-12 bottom-0 bg-gray-900/90 backdrop-blur-sm z-[60] hidden overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  style="visibility: hidden; opacity: 0;"
+>
+  <div class="px-4 text-center pt-1">
+    <!-- Overlay pour fermer en cliquant en dehors -->
+    <div 
+      class="fixed inset-x-0 top-8 bottom-0 z-20"
+      data-modal-close
+      style="visibility: hidden;"
+    ></div>
+    
+    <div class="inline-block w-full max-w-4xl mt-0.5 text-left align-middle transition-all transform bg-gray-900 shadow-xl rounded-2xl border border-gray-800/50 p-6 relative z-30">
+      <button
+        type="button"
+        class="absolute top-4 right-4 text-gray-400 hover:text-white focus:outline-none"
+        data-modal-close
+      >
+        <span class="sr-only">Fermer</span>
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="mt-2 overflow-y-auto max-h-[calc(100vh-80px)]">
+        <slot />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-modal-close]').forEach(element => {
+    element.addEventListener('click', () => {
+      const modal = element.closest('[role="dialog"]');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.visibility = 'hidden';
+        modal.style.opacity = '0';
+        navbar.style.zIndex = '40'; // Désactive la navbar
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-modal-target]').forEach(button => {
+    button.addEventListener('click', () => {
+      const modalId = button.getAttribute('data-modal-target');
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+        navbar.style.zIndex = '0'; // Désactive la navbar
+      }
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      const openModal = document.querySelector('[role="dialog"]:not(.hidden)');
+      if (openModal) {
+        openModal.classList.add('hidden');
+        openModal.style.visibility = 'hidden';
+        openModal.style.opacity = '0';
+      }
+    }
+  });
+</script>
