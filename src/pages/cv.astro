@@ -1,0 +1,152 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+
+const experiences = [
+ {
+   title: "Responsable technique",
+   company: "Oteria Cyber Advisory",
+   location: "Gennevilliers, Île-de-France",
+   period: "Juillet 2024 - Présent",
+   tasks: [
+     "Responsable technique en cybersécurité",
+     "Support et conseil technique",
+     "Veille en sécurité offensive"
+   ]
+ },
+ {
+   title: "Réserviste Opérationnel",
+   company: "Gendarmerie Nationale",
+   location: "France", 
+   period: "Juin 2024 - Présent",
+   tasks: [
+     "Mission de soutien opérationnel",
+     "Assistance aux unités de gendarmerie",
+     "Participation aux opérations de sécurité"
+   ]
+ },
+ {
+   title: "Réserviste",
+   company: "Armée de Terre",
+   location: "France",
+   period: "Juin 2023 - Mai 2024",
+   tasks: [
+     "Formation militaire de base",
+     "Missions de soutien aux unités",
+     "Participation aux opérations militaires"
+   ]
+ }
+];
+
+const certifications = [
+{
+   title: "eLearnSecurity Certified Professional Penetration Tester (eCPPT)",
+   issuer: "INE",
+   date: "Août 2023",
+   id: "7558965",
+   skills: ["Hacking éthique", "Cybersécurité", "Active Directory", "Windows", "Linux"]
+ },
+ {
+   title: "eLearnSecurity Web application Penetration Tester (eWPT)",
+   issuer: "INE", 
+   date: "Mai 2023",
+   id: "8845186",
+   skills: ["Hacking éthique", "Cybersécurité", "Applications web"]
+ },
+ {
+   title: "Junior Penetration Tester (eJPTv2)",
+   issuer: "INE",
+   date: "Avril 2023",
+   id: "c337c491",
+   skills: ["Hacking éthique", "Cybersécurité"]
+ },
+ {
+   title: "Practical Junior Penetration Tester",
+   issuer: "TCM Security",
+   date: "Février 2023",
+   id: "84897852",
+   skills: ["Hacking éthique", "Cybersécurité", "Active Directory"]
+ }
+];
+---
+
+<Layout title="CV - Cybersécurité">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div class="container mx-auto px-4 py-24 max-w-6xl">
+      <div class="bg-gray-800/50 backdrop-blur p-8 rounded-xl shadow-lg border border-gray-700 max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-12">
+          <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+            Curriculum Vitae
+          </span>
+        </h1>
+        
+        <section class="space-y-8 mb-12">
+          <h2 class="text-2xl font-bold text-cyan-400">Formation</h2>
+          <div class="space-y-4">
+            <div class="bg-gray-700/50 p-6 rounded-lg">
+              <h3 class="text-xl font-semibold text-white">Expert en Cybersécurité (Bac+5)</h3>
+              <p class="text-gray-300">Oteria Cyber School - 2024-2029</p>
+            </div>
+            <div class="bg-gray-700/50 p-6 rounded-lg">
+              <h3 class="text-xl font-semibold text-white">Baccalauréat général</h3>
+              <p class="text-gray-300">Lycée Emile Zola Chateaudun - 2021-2024</p>
+              <p class="text-gray-300">Mention : Assez bien</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-8 mb-12">
+          <h2 class="text-2xl font-bold text-cyan-400">Expérience</h2>
+          <div class="space-y-4">
+            {experiences.map((exp) => (
+              <div class="bg-gray-700/50 p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-white">{exp.title}</h3>
+                <p class="text-gray-300 mb-4">{exp.company} - {exp.period}</p>
+                <ul class="list-disc list-inside text-gray-300 space-y-2">
+                  {exp.tasks.map((task) => (
+                    <li>{task}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="space-y-8 mb-12">
+          <h2 class="text-2xl font-bold text-cyan-400">Certifications</h2>
+          <div class="bg-gray-700/50 p-6 rounded-lg">
+            <ul class="space-y-6">
+              {certifications.map((cert) => (
+                <li>
+                  <div class="flex items-start gap-2">
+                    <span class="text-cyan-400 mt-1">▸</span>
+                    <div>
+                      <h4 class="font-semibold text-white">{cert.title}</h4>
+                      <p class="text-gray-300 text-sm">{cert.issuer} {cert.date && `- ${cert.date}`}</p>
+                      {cert.id && <p class="text-gray-400 text-xs">ID: {cert.id}</p>}
+                      {cert.skills && (
+                        <div class="flex flex-wrap gap-2 mt-2">
+                          {cert.skills.map((skill) => (
+                            <span class="text-xs bg-gray-600/50 px-2 py-1 rounded text-cyan-400">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <div class="text-center">
+          <Button href="/cv.pdf" variant="primary">
+            Télécharger le CV
+          </Button>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
