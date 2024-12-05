@@ -1,0 +1,105 @@
+---
+import Layout from '../../../../layouts/Layout_admin.astro';
+import { verifyToken } from '../../../../lib/auth';
+import { db } from '../../../../lib/db';
+
+// Vérification de l'authentification
+const token = Astro.cookies.get('token')?.value;
+if (!token || !verifyToken(token)) {
+  return Astro.redirect('/admin/login');
+}
+
+// Récupération de l'article
+const { id } = Astro.params;
+const result = await db.execute({
+  sql: 'SELECT * FROM articles WHERE id = ?',
+  args: [id]
+});
+
+const article = result.rows[0];
+if (!article) {
+  return Astro.redirect('/admin/articles');
+}
+---
+
+<Layout title="Modifier l'Article - Administration">
+  <main class="pt-32">
+    <div class="container mx-auto px-6 py-12">
+      <h1 class="text-4xl font-bold mb-8">
+        <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+          Modifier l'Article
+        </span>
+      </h1>
+
+      <form action={`/api/articles/${id}`} method="POST" class="max-w-4xl space-y-6">
+        <input type="hidden" name="_method" value="PUT" />
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">
+            Titre
+          </label>
+          <input
+            type="text"
+            name="title"
+            value={article.title}
+            required
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">
+            Description
+          </label>
+          <input
+            type="text"
+            name="description"
+            value={article.description}
+            required
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">
+            Icône (emoji)
+          </label>
+          <input
+            type="text"
+            name="icon"
+            value={article.icon}
+            maxlength="2"
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">
+            Contenu (Markdown)
+          </label>
+          <textarea
+            name="content"
+            required
+            rows="10"
+            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500 font-mono"
+          >{article.content}</textarea>
+        </div>
+
+        <div class="flex justify-end space-x-4">
+          <a 
+            href="/admin/articles"
+            class="px-4 py-2 text-gray-400 hover:text-gray-300 transition-colors"
+          >
+            Annuler
+          </a>
+          <button
+            type="submit"
+            class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+          >
+            Mettre à jour
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</Layout>
