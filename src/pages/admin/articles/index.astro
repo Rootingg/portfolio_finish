@@ -1,0 +1,131 @@
+---
+import Layout from '../../../layouts/Layout_admin.astro';
+import { verifyToken } from '../../../lib/auth';
+import { db } from '../../../lib/db';
+
+// Vérification de l'authentification
+const token = Astro.cookies.get('token')?.value;
+if (!token || !verifyToken(token)) {
+  return Astro.redirect('/admin/login');
+}
+
+// Récupération des articles depuis la base de données
+const result = await db.execute(`
+  SELECT 
+    id, 
+    title, 
+    description, 
+    icon,
+    created_at,
+    slug
+  FROM articles 
+  ORDER BY created_at DESC
+`);
+
+const articles = result.rows;
+
+// Gestion de la suppression si demandée via POST
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const articleId = formData.get('articleId');
+  const action = formData.get('action');
+
+  if (action === 'delete' && articleId) {
+    await db.execute('DELETE FROM articles WHERE id = ?', [articleId]);
+    return Astro.redirect('/admin/articles');
+  }
+}
+---
+
+<Layout title="Gestion des Articles - Administration">
+  <main class="pt-32">
+    <div class="container mx-auto px-6 py-12">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-4xl font-bold">
+          <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+            Articles
+          </span>
+        </h1>
+        <a 
+          href="/admin/articles/new" 
+          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+        >
+          Nouvel Article
+        </a>
+      </div>
+
+      <div class="bg-white/5 backdrop-blur-lg rounded-xl border border-gray-800/20 overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-800/20">
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Titre</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Description</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Date</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {articles.map((article) => (
+              <tr class="border-b border-gray-800/10 hover:bg-gray-800/5">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <span class="text-2xl mr-3">{article.icon}</span>
+                    <span class="font-medium">{article.title}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <p class="text-gray-400 truncate max-w-md">{article.description}</p>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-400">
+                  {new Date(article.created_at).toLocaleDateString('fr-FR')}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <a 
+                    href={`/admin/articles/${article.id}/edit`} 
+                    class="text-cyan-500 hover:text-cyan-400 mr-4"
+                  >
+                    Modifier
+                  </a>
+                  <button
+                    data-article-id={article.id}
+                    class="text-red-500 hover:text-red-400 delete-article"
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  document.querySelectorAll('.delete-article').forEach(button => {
+    button.addEventListener('click', async () => {
+      if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
+      
+      const articleId = button.getAttribute('data-article-id');
+      
+      // Création du formulaire pour la suppression
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.style.display = 'none';
+
+      const actionInput = document.createElement('input');
+      actionInput.name = 'action';
+      actionInput.value = 'delete';
+      form.appendChild(actionInput);
+
+      const idInput = document.createElement('input');
+      idInput.name = 'articleId';
+      idInput.value = articleId;
+      form.appendChild(idInput);
+
+      document.body.appendChild(form);
+      form.submit();
+    });
+  });
+</script>

@@ -1,0 +1,200 @@
+---
+import Layout from '../../../layouts/Layout_admin.astro';
+import { verifyToken } from '../../../lib/auth';
+import { db } from '../../../lib/db';
+
+// Vérification de l'authentification
+const token = Astro.cookies.get('token')?.value;
+if (!token || !verifyToken(token)) {
+  return Astro.redirect('/admin/login');
+}
+
+// Récupération des messages
+const result = await db.execute(`
+  SELECT * FROM contacts 
+  ORDER BY created_at DESC
+`);
+const messages = result.rows;
+---
+
+<Layout title="Messages - Administration">
+  <main class="pt-32">
+    <div class="container mx-auto px-6 py-12">
+      <h1 class="text-4xl font-bold mb-8">
+        <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+          Messages
+        </span>
+      </h1>
+
+      <div class="bg-white/5 backdrop-blur-lg rounded-xl border border-gray-800/20 overflow-hidden">
+        {messages.length === 0 ? (
+          <div class="p-8 text-center text-gray-400">
+            Aucun message reçu pour le moment.
+          </div>
+        ) : (
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-gray-800/20">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Nom</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Message</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Statut</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {messages.map((message: any) => (
+                <tr class="border-b border-gray-800/10 hover:bg-gray-800/5">
+                  <td class="px-6 py-4 whitespace-nowrap font-medium">
+                    {message.name}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-gray-400">
+                    <a href={`mailto:${message.email}`} class="hover:text-cyan-500">
+                      {message.email}
+                    </a>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-gray-400 truncate max-w-xs">{message.message}</p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-gray-400">
+                    {new Date(message.created_at).toLocaleDateString('fr-FR')}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class={`px-2 py-1 rounded-full text-xs ${message.read ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400'}`}>
+                      {message.read ? 'Lu' : 'Non lu'}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button
+                      data-message-id={message.id}
+                      data-message-name={message.name}
+                      data-message-email={message.email}
+                      data-message-content={message.message}
+                      class="view-message text-cyan-500 hover:text-cyan-400 mr-4"
+                    >
+                      Voir
+                    </button>
+                    <button
+                      data-message-id={message.id}
+                      class="delete-message text-red-500 hover:text-red-400"
+                    >
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de visualisation -->
+  <div id="message-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-gray-900 p-6 rounded-xl max-w-2xl w-full mx-4">
+      <div class="mb-4">
+        <h2 class="text-2xl font-bold mb-2" id="modal-name"></h2>
+        <p class="text-gray-400" id="modal-email"></p>
+      </div>
+      <div class="bg-gray-800/50 p-4 rounded-lg mb-6">
+        <p id="modal-message" class="whitespace-pre-wrap"></p>
+      </div>
+      <div class="flex justify-end">
+        <button id="close-modal" class="text-gray-400 hover:text-gray-300">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Gestion du modal
+  const modal = document.getElementById('message-modal');
+  const closeModal = document.getElementById('close-modal');
+  const modalName = document.getElementById('modal-name');
+  const modalEmail = document.getElementById('modal-email');
+  const modalMessage = document.getElementById('modal-message');
+
+  // Fermeture du modal
+  closeModal?.addEventListener('click', () => {
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+  });
+
+  // Fermeture du modal en cliquant en dehors
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  });
+
+  // Ouverture du modal
+  document.querySelectorAll('.view-message').forEach(button => {
+    button.addEventListener('click', async () => {
+      const messageId = button.getAttribute('data-message-id');
+      const name = button.getAttribute('data-message-name');
+      const email = button.getAttribute('data-message-email');
+      const message = button.getAttribute('data-message-content');
+
+      if (modalName) modalName.textContent = name || '';
+      if (modalEmail) modalEmail.textContent = email || '';
+      if (modalMessage) modalMessage.textContent = message || '';
+
+      modal?.classList.remove('hidden');
+      modal?.classList.add('flex');
+
+      // Marquer comme lu
+      try {
+        await fetch(`/api/messages/${messageId}/read`, { method: 'POST' });
+        const statusSpan = button.closest('tr')?.querySelector('td:nth-child(5) span');
+        if (statusSpan) {
+          statusSpan.textContent = 'Lu';
+          statusSpan.classList.remove('bg-yellow-500/10', 'text-yellow-400');
+          statusSpan.classList.add('bg-green-500/10', 'text-green-400');
+        }
+      } catch (error) {
+        console.error('Erreur lors du marquage comme lu:', error);
+      }
+    });
+  });
+
+  // Suppression d'un message
+  document.querySelectorAll('.delete-message').forEach(button => {
+    button.addEventListener('click', async () => {
+      if (!confirm('Voulez-vous vraiment supprimer ce message ?')) return;
+      
+      const messageId = button.getAttribute('data-message-id');
+      try {
+        const response = await fetch(`/api/messages/${messageId}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          button.closest('tr')?.remove();
+          
+          // Si c'était le dernier message, afficher le message "Aucun message"
+          const tbody = document.querySelector('tbody');
+          if (tbody && !tbody.hasChildNodes()) {
+            const table = tbody.closest('table');
+            if (table) {
+              table.outerHTML = `
+                <div class="p-8 text-center text-gray-400">
+                  Aucun message reçu pour le moment.
+                </div>
+              `;
+            }
+          }
+        } else {
+          throw new Error('Erreur lors de la suppression');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+        alert('Une erreur est survenue lors de la suppression du message.');
+      }
+    });
+  });
+</script>
