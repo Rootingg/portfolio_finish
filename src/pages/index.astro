@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import Modal from '../components/Modal.astro';
+import Card from '../components/Card.astro';
+import { db } from '../lib/db';
+
+const result = await db.execute(`
+  SELECT id, title, description, content, icon, created_at as date 
+  FROM articles 
+  ORDER BY created_at DESC 
+  LIMIT 3
+`);
+const latestArticles = result.rows;
+
+const result2 = await db.execute(`
+  SELECT id, title, description, content, icon, created_at as date 
+  FROM articles 
+  ORDER BY RANDOM() 
+  LIMIT 2
+`);
+const featuredArticles = result2.rows;
+---
+
+<Layout title="Lucas | Portfolio">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <section class="min-h-[80vh] flex items-center justify-center relative">
+      <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent"></div>
+      <div class="container mx-auto px-4 py-24 text-center relative animate-fade-in">
+        <h1 class="text-6xl font-bold mb-6">
+          <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+            Je suis Lucas
+          </span>
+        </h1>
+        <p class="text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+          Étudiant passionné par le Pentest et les CTF. Je combine créativité technique 
+          et méthodologie pour découvrir les vulnérabilités et relever les défis des compétitions en sécurité offensive.
+        </p>
+        <div class="flex gap-4 justify-center">
+          <Button href="/about" variant="primary">En savoir plus</Button>
+          <Button href="/contact" variant="secondary">Me contacter</Button>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-24">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold mb-16 text-center">
+          <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+            Articles à la Une
+          </span>
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8">
+          {featuredArticles.map((article) => (
+            <>
+              <button 
+                class="w-full text-left"
+                data-modal-target={`modal-${article.id}`}
+              >
+                <Card {...article} />
+              </button>
+              
+              <Modal id={`modal-${article.id}`}>
+                <div class="prose prose-invert max-w-none">
+                  <div class="text-4xl mb-4">{article.icon}</div>
+                  <h1 class="text-3xl font-bold mb-2 text-cyan-400">{article.title}</h1>
+                  <p class="text-gray-400 text-sm mb-6">
+                    {new Date(article.date).toLocaleDateString('fr-FR', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </p>
+                  <div class="text-gray-300" set:html={article.content} />
+                </div>
+              </Modal>
+            </>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="py-24 bg-gray-800/50">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold mb-16 text-center">
+          <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
+            Derniers Articles
+          </span>
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          {latestArticles.map((article) => (
+            <>
+              <button 
+                class="w-full text-left"
+                data-modal-target={`modal-${article.id}`}
+              >
+                <Card {...article} />
+              </button>
+
+              <Modal id={`modal-${article.id}`}>
+                <div class="prose prose-invert max-w-none">
+                  <div class="text-4xl mb-4">{article.icon}</div>
+                  <h1 class="text-3xl font-bold mb-2 text-cyan-400">{article.title}</h1>
+                  <p class="text-gray-400 text-sm mb-6">
+                    {new Date(article.date).toLocaleDateString('fr-FR', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </p>
+                  <div class="text-gray-300" set:html={article.content} />
+                </div>
+              </Modal>
+            </>
+          ))}
+        </div>
+        <div class="text-center mt-12">
+          <Button href="/blog" variant="secondary">Voir tous les articles</Button>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
