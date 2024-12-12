@@ -1,6 +1,6 @@
 # Projet Web - Portfolio Cybersécurité
 
-Ce projet est un portfolio personnel destiné à présenter les compétences, expériences, certifications, projets et articles d'un professionnel en cybersécurité passionné par le Pentest et les CTF. Il inclut également une interface d'administration (CRM) permettant de gérer le contenu du site, notamment les articles, projets, compétitions CTF, et messages de contact.
+Ce projet est un portfolio personnel destiné à présenter les compétences, expériences, certifications, projets et articles d'un professionnel en cybersécurité passionné par le Pentest et les CTF. Il inclut également une interface d'administration (CRM) permettant de gérer le contenu du site, notamment les articles, projets, CTF, et messages de contact.
 
 ---
 
@@ -26,7 +26,7 @@ Ce portfolio inclut les pages suivantes :
 - **Blog** : Articles détaillés sur des sujets liés à la cybersécurité.
 - **Projets** : Liste des projets réalisés avec leurs descriptions et technologies utilisées.
 - **Contact** : Formulaire de contact et liens vers les réseaux sociaux.
-- **CTF** : Résultats des compétitions CTF.
+- **CTF** : Résultats des  CTF.
 - **Administration** : Interface CRM pour gérer les articles, projets, CTFs et messages.
 
 ## Technologies Utilisées
@@ -88,7 +88,7 @@ Voici les principaux fichiers et répertoires du projet :
 - Hachage des mots de passe avec bcryptjs.
 
 ### Administration
-- Interface CRM pour gérer les articles, projets, compétitions CTF et messages non lus.
+- Interface CRM pour gérer les articles, projets,  CTF et messages non lus.
 - Scripts d'initialisation pour créer un utilisateur admin par défaut.
 
 ### Optimisation
