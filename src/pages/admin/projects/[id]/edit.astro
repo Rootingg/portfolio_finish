@@ -23,95 +23,97 @@ if (!project) {
 ---
 
 <Layout title="Modifier le Projet - Administration">
-  <main class="pt-32">
-    <div class="container mx-auto px-6 py-12">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div class="container mx-auto px-4 py-24 max-w-4xl">
       <h1 class="text-4xl font-bold mb-8">
         <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
           Modifier le Projet
         </span>
       </h1>
 
-      <form action={`/api/projects/${id}`} method="POST" class="max-w-4xl space-y-6">
-        <input type="hidden" name="_method" value="PUT" />
-        
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">
-            Titre
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={project.title}
-            required
-            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
-          />
-        </div>
+      <div class="bg-gray-800/50 backdrop-blur p-8 rounded-xl border border-gray-700">
+        <form action={`/api/projects/${id}`} method="POST" class="space-y-6">
+          <input type="hidden" name="_method" value="PUT" />
 
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">
-            Description
-          </label>
-          <textarea
-            name="description"
-            required
-            rows="3"
-            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
-          >{project.description}</textarea>
-        </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              Titre
+            </label>
+            <input
+                type="text"
+                name="title"
+                value={project.title}
+                required
+                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors"
+            />
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">
-            Icône (emoji)
-          </label>
-          <input
-            type="text"
-            name="icon"
-            value={project.icon}
-            maxlength="2"
-            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              Description
+            </label>
+            <textarea
+                name="description"
+                required
+                rows="3"
+                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors"
+            >{project.description}</textarea>
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">
-            Technologies (séparées par des virgules)
-          </label>
-          <input
-            type="text"
-            name="tech"
-            value={JSON.parse(project.tech).join(', ')}
-            required
-            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              Icône (emoji)
+            </label>
+            <input
+                type="text"
+                name="icon"
+                value={project.icon}
+                maxlength="2"
+                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors"
+            />
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">
-            Lien GitHub
-          </label>
-          <input
-            type="url"
-            name="github"
-            value={project.github}
-            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              Technologies (séparées par des virgules)
+            </label>
+            <input
+                type="text"
+                name="tech"
+                value={JSON.parse(project.tech).join(', ')}
+                required
+                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors"
+            />
+          </div>
 
-        <div class="flex justify-end space-x-4">
-          <a 
-            href="/admin/projects"
-            class="px-4 py-2 text-gray-400 hover:text-gray-300 transition-colors"
-          >
-            Annuler
-          </a>
-          <button
-            type="submit"
-            class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
-          >
-            Mettre à jour
-          </button>
-        </div>
-      </form>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              Lien GitHub
+            </label>
+            <input
+                type="url"
+                name="github"
+                value={project.github}
+                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors"
+            />
+          </div>
+
+          <div class="flex justify-end space-x-4">
+            <a
+                href="/admin/projects"
+                class="px-4 py-3 text-gray-300 hover:text-cyan-400 transition-colors"
+            >
+              Annuler
+            </a>
+            <button
+                type="submit"
+                class="bg-cyan-500 text-white px-6 py-3 rounded-lg hover:bg-cyan-600 transition-colors"
+            >
+              Mettre à jour
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </main>
 </Layout>

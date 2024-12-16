@@ -9,7 +9,7 @@ if (!token || !verifyToken(token)) {
   return Astro.redirect('/admin/login');
 }
 
-// Récupération des articles depuis la base de données
+// Récupération des articles
 const result = await db.execute(`
   SELECT 
     id, 
@@ -24,7 +24,6 @@ const result = await db.execute(`
 
 const articles = result.rows;
 
-// Gestion de la suppression si demandée via POST
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
   const articleId = formData.get('articleId');
@@ -38,63 +37,60 @@ if (Astro.request.method === 'POST') {
 ---
 
 <Layout title="Gestion des Articles - Administration">
-  <main class="pt-32">
-    <div class="container mx-auto px-6 py-12">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div class="container mx-auto px-4 py-24 max-w-6xl">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-4xl font-bold">
           <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
             Articles
           </span>
         </h1>
-        <a 
-          href="/admin/articles/new" 
-          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+        <a
+            href="/admin/articles/new"
+            class="bg-cyan-500 text-white px-6 py-3 rounded-lg hover:bg-cyan-600 transition-colors"
         >
           Nouvel Article
         </a>
       </div>
 
-      <div class="bg-white/5 backdrop-blur-lg rounded-xl border border-gray-800/20 overflow-hidden">
-        <table class="w-full">
+      <div class="bg-gray-800/50 backdrop-blur rounded-xl border border-gray-700 overflow-hidden">
+        <table class="w-full table-fixed"> <!-- Ajout de table-fixed -->
           <thead>
-            <tr class="border-b border-gray-800/20">
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Titre</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Description</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Date</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase">Actions</th>
-            </tr>
+          <tr class="border-b border-gray-700">
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase w-1/6">Titre</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase w-2/5">Description</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase w-1/6">Date</th>
+            <th class="px-6 py-4 text-right text-xs font-medium text-gray-400 uppercase w-1/6">Actions</th>
+          </tr>
           </thead>
           <tbody>
-            {articles.map((article) => (
-              <tr class="border-b border-gray-800/10 hover:bg-gray-800/5">
+          {articles.map((article) => (
+              <tr class="hover:bg-gray-700/30 transition-colors">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
                     <span class="text-2xl mr-3">{article.icon}</span>
-                    <span class="font-medium">{article.title}</span>
+                    <span class="font-medium text-gray-200 truncate">{article.title}</span>
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <p class="text-gray-400 truncate max-w-md">{article.description}</p>
+                  <p class="text-gray-300 truncate w-full">{article.description}</p>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-400">
                   {new Date(article.created_at).toLocaleDateString('fr-FR')}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <a 
-                    href={`/admin/articles/${article.id}/edit`} 
-                    class="text-cyan-500 hover:text-cyan-400 mr-4"
-                  >
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <a href={`/admin/articles/${article.id}/edit`}
+                     class="text-cyan-400 hover:text-cyan-300 transition-colors mr-4">
                     Modifier
                   </a>
                   <button
-                    data-article-id={article.id}
-                    class="text-red-500 hover:text-red-400 delete-article"
-                  >
+                      data-article-id={article.id}
+                      class="text-red-400 hover:text-red-300 transition-colors delete-article">
                     Supprimer
                   </button>
                 </td>
               </tr>
-            ))}
+          ))}
           </tbody>
         </table>
       </div>
