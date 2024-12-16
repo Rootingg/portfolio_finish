@@ -9,9 +9,9 @@ if (token) {
 ---
 
 <Layout title="Connexion - Administration">
-  <main class="pt-32">
-    <div class="container mx-auto px-6 py-12">
-      <div class="max-w-md mx-auto">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div class="container mx-auto px-4 py-24 max-w-md">
+      <div class="bg-gray-800/50 backdrop-blur p-8 rounded-xl border border-gray-700">
         <h1 class="text-4xl font-bold mb-8 text-center">
           <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
             Connexion
@@ -24,10 +24,10 @@ if (token) {
               Nom d'utilisateur
             </label>
             <input
-              type="text"
-              name="username"
-              required
-              class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+                type="text"
+                name="username"
+                required
+                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors"
             />
           </div>
 
@@ -36,16 +36,16 @@ if (token) {
               Mot de passe
             </label>
             <input
-              type="password"
-              name="password"
-              required
-              class="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500"
+                type="password"
+                name="password"
+                required
+                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors"
             />
           </div>
 
           <button
-            type="submit"
-            class="w-full bg-cyan-600 text-white py-2 px-4 rounded-lg hover:bg-cyan-700 transition-colors"
+              type="submit"
+              class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
           >
             Se connecter
           </button>

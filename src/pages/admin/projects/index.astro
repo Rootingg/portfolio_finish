@@ -15,82 +15,82 @@ const projects = result.rows;
 ---
 
 <Layout title="Gestion des Projets - Administration">
-  <main class="pt-32">
-    <div class="container mx-auto px-6 py-12">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div class="container mx-auto px-4 py-24 max-w-6xl">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-4xl font-bold">
           <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
             Projets
           </span>
         </h1>
-        <a 
-          href="/admin/projects/new" 
-          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+        <a
+            href="/admin/projects/new"
+            class="bg-cyan-500 text-white px-6 py-3 rounded-lg hover:bg-cyan-600 transition-colors"
         >
           Nouveau Projet
         </a>
       </div>
 
-      <div class="bg-white/5 backdrop-blur-lg rounded-xl border border-gray-800/20 overflow-hidden">
+      <div class="bg-gray-800/50 backdrop-blur rounded-xl border border-gray-700 overflow-hidden">
         <table class="w-full">
           <thead>
-            <tr class="border-b border-gray-800/20">
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Titre</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Technologies</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase">Actions</th>
-            </tr>
+          <tr class="border-b border-gray-700">
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Titre</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Technologies</th>
+            <th class="px-6 py-4 text-right text-xs font-medium text-gray-400 uppercase">Actions</th>
+          </tr>
           </thead>
-          <tbody>
-            {projects.map((project: any) => (
-              <tr class="border-b border-gray-800/10 hover:bg-gray-800/5">
+          <tbody class="divide-y divide-gray-700">
+          {projects.map((project: any) => (
+              <tr class="hover:bg-gray-700/30 transition-colors">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
                     <span class="text-2xl mr-3">{project.icon}</span>
-                    <span class="font-medium">{project.title}</span>
+                    <span class="font-medium text-gray-200">{project.title}</span>
                   </div>
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex flex-wrap gap-2">
                     {JSON.parse(project.tech).map((tech: string) => (
-                      <span class="px-2 py-1 bg-gray-800/50 rounded-full text-xs text-cyan-400">
+                        <span class="px-3 py-1 bg-gray-700/50 rounded-full text-xs text-cyan-400">
                         {tech}
                       </span>
                     ))}
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <a href={`/admin/projects/${project.id}/edit`} class="text-cyan-500 hover:text-cyan-400 mr-4">
+                  <a href={`/admin/projects/${project.id}/edit`} class="text-cyan-400 hover:text-cyan-300 transition-colors mr-4">
                     Modifier
                   </a>
                   <button
-                    data-project-id={project.id}
-                    class="text-red-500 hover:text-red-400 delete-project"
+                      data-project-id={project.id}
+                      class="text-red-400 hover:text-red-300 transition-colors delete-project"
                   >
                     Supprimer
                   </button>
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
-</Layout>
+            </tbody>
+            </table>
+            </div>
+            </div>
+            </main>
+            </Layout>
 
-<script>
-  document.querySelectorAll('.delete-project').forEach(button => {
-    button.addEventListener('click', async () => {
-      if (!confirm('Voulez-vous vraiment supprimer ce projet ?')) return;
-      
-      const projectId = button.getAttribute('data-project-id');
-      const response = await fetch(`/api/projects/${projectId}`, {
-        method: 'DELETE'
-      });
+            <script>
+                document.querySelectorAll('.delete-project').forEach(button => {
+                  button.addEventListener('click', async () => {
+                    if (!confirm('Voulez-vous vraiment supprimer ce projet ?')) return;
 
-      if (response.ok) {
-        window.location.reload();
-      }
-    });
-  });
-</script>
+                    const projectId = button.getAttribute('data-project-id');
+                    const response = await fetch(`/api/projects/${projectId}`, {
+                      method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                      window.location.reload();
+                    }
+                  });
+                });
+                </script>
