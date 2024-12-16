@@ -102,31 +102,62 @@ const socialLinks = [
         </div>
       </div>
     </div>
+    <div id="notification" class="fixed top-24 right-4 max-w-sm p-4 rounded-lg border transform translate-x-full transition-transform duration-300 z-50">
+      <div class="flex items-center space-x-3">
+        <span id="notification-icon" class="text-2xl"></span>
+        <p id="notification-message" class="text-sm"></p>
+      </div>
+    </div>
+
   </main>
 </Layout>
 
 <script>
   const form = document.getElementById('contact-form');
-  
+  const notification = document.getElementById('notification');
+  const notificationMessage = document.getElementById('notification-message');
+  const notificationIcon = document.getElementById('notification-icon');
+
+  const showNotification = (message: string, type: 'success' | 'error') => {
+    if (notification && notificationMessage && notificationIcon) {
+      if (type === 'success') {
+        notification.className = 'fixed top-24 right-4 max-w-sm p-4 rounded-lg border bg-green-500/10 border-green-500/20 text-green-400 transform translate-x-full transition-transform duration-300 z-50';
+        notificationIcon.textContent = '✓';
+      } else {
+        notification.className = 'fixed top-24 right-4 max-w-sm p-4 rounded-lg border bg-red-500/10 border-red-500/20 text-red-400 transform translate-x-full transition-transform duration-300 z-50';
+        notificationIcon.textContent = '✕';
+      }
+      notificationMessage.textContent = message;
+
+      setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+      }, 100);
+
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+      }, 3000);
+    }
+  };
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData(form as HTMLFormElement);
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         body: formData
       });
-      
+
       if (response.ok) {
-        alert('Message envoyé avec succès!');
+        showNotification('Message envoyé avec succès !', 'success');
         (form as HTMLFormElement).reset();
       } else {
         throw new Error('Erreur lors de l\'envoi du message');
       }
     } catch (error) {
-      alert('Une erreur est survenue. Veuillez réessayer.');
+      showNotification('Une erreur est survenue. Veuillez réessayer.', 'error');
     }
   });
 </script>
