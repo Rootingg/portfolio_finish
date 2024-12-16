@@ -9,7 +9,7 @@ console.log('Admin page token:', token);
 if (token) {
   const verified = verifyToken(token);
   console.log('Token verification:', verified);
-  
+
   if (!verified) {
     console.log('Invalid token, redirecting to login');
     return Astro.redirect('/admin/login');
@@ -28,43 +28,43 @@ const stats = {
 ---
 
 <Layout title="Administration - CyberPortfolio">
-  <main class="pt-32">
-    <div class="container mx-auto px-6 py-12">
-      <h1 class="text-4xl font-bold mb-8">
+  <main class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div class="container mx-auto px-4 py-24 max-w-6xl">
+      <h1 class="text-4xl font-bold mb-12">
         <span class="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
           Administration
         </span>
       </h1>
 
       <div class="grid md:grid-cols-3 gap-6 mb-12">
-        <div class="bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-gray-800/20">
-          <h2 class="text-xl font-bold mb-2">Articles</h2>
-          <p class="text-3xl text-cyan-500">{stats.articles}</p>
-          <a href="/admin/articles" class="text-sm text-gray-400 hover:text-cyan-500">Gérer →</a>
+        <div class="bg-gray-800/50 backdrop-blur p-6 rounded-xl border border-gray-700">
+          <h2 class="text-xl font-bold mb-2 text-white">Articles</h2>
+          <p class="text-3xl text-cyan-400">{stats.articles}</p>
+          <a href="/admin/articles" class="text-sm text-gray-300 hover:text-cyan-400 transition-colors">Gérer →</a>
         </div>
 
-        <div class="bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-gray-800/20">
-          <h2 class="text-xl font-bold mb-2">Projets</h2>
-          <p class="text-3xl text-cyan-500">{stats.projects}</p>
-          <a href="/admin/projects" class="text-sm text-gray-400 hover:text-cyan-500">Gérer →</a>
+        <div class="bg-gray-800/50 backdrop-blur p-6 rounded-xl border border-gray-700">
+          <h2 class="text-xl font-bold mb-2 text-white">Projets</h2>
+          <p class="text-3xl text-cyan-400">{stats.projects}</p>
+          <a href="/admin/projects" class="text-sm text-gray-300 hover:text-cyan-400 transition-colors">Gérer →</a>
         </div>
 
-        <div class="bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-gray-800/20">
-          <h2 class="text-xl font-bold mb-2">CTFS</h2>
-          <p class="text-3xl text-cyan-500">{stats.ctfs}</p>
-          <a href="/admin/ctfs" class="text-sm text-gray-400 hover:text-cyan-500">Gérer →</a>
+        <div class="bg-gray-800/50 backdrop-blur p-6 rounded-xl border border-gray-700">
+          <h2 class="text-xl font-bold mb-2 text-white">CTFS</h2>
+          <p class="text-3xl text-cyan-400">{stats.ctfs}</p>
+          <a href="/admin/ctfs" class="text-sm text-gray-300 hover:text-cyan-400 transition-colors">Gérer →</a>
         </div>
 
-        <div class="bg-white/5 backdrop-blur-lg p-6 rounded-xl border border-gray-800/20">
-          <h2 class="text-xl font-bold mb-2">Messages non lus</h2>
-          <p class="text-3xl text-cyan-500">{stats.messages}</p>
-          <a href="/admin/messages" class="text-sm text-gray-400 hover:text-cyan-500">Voir →</a>
+        <div class="bg-gray-800/50 backdrop-blur p-6 rounded-xl border border-gray-700">
+          <h2 class="text-xl font-bold mb-2 text-white">Messages non lus</h2>
+          <p class="text-3xl text-cyan-400">{stats.messages}</p>
+          <a href="/admin/messages" class="text-sm text-gray-300 hover:text-cyan-400 transition-colors">Voir →</a>
         </div>
       </div>
 
       <div class="flex justify-end">
         <form method="POST" action="/api/auth/logout">
-          <button type="submit" class="text-gray-400 hover:text-cyan-500">
+          <button type="submit" class="text-gray-300 hover:text-cyan-400 transition-colors">
             Déconnexion
           </button>
         </form>
